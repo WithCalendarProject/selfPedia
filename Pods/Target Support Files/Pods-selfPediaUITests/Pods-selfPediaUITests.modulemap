@@ -1,0 +1,6 @@
+framework module Pods_selfPediaUITests {
+  umbrella header "Pods-selfPediaUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
