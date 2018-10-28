@@ -1,15 +1,15 @@
 //
-//  MyListViewController.swift
+//  NextListViewController.swift
 //  selfPedia
 //
-//  Created by 川村周也 on 2018/09/18.
+//  Created by 川村周也 on 2018/10/25.
 //  Copyright © 2018年 川村周也. All rights reserved.
 //
 
 import UIKit
 import RealmSwift
 
-class MyListViewController: UIViewController {
+class NextListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     private var realm: Realm!
     
@@ -31,15 +31,13 @@ class MyListViewController: UIViewController {
     }
     )
     
-    // let config = Realm.Configuration(schemaVersion: 2)
+    @IBOutlet weak var NextListTable: UITableView!
     
     private var animeList: Results<AnimeFolder>!
     private var token: NotificationToken!
     var parentID = "0"
     private var parentPrimaryKey = "0"
     private var state: State = .nomal
-    
-    @IBOutlet weak var myListTable: UITableView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -59,13 +57,9 @@ class MyListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        reload()
-        myListTable.delegate = self
-        myListTable.dataSource = self
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        reload()
+        NextListTable.delegate = self
+        NextListTable.dataSource = self
+        // Do any additional setup after loading the view.
     }
     
     override func didReceiveMemoryWarning() {
@@ -76,26 +70,10 @@ class MyListViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "toNextItems") {
             // 次のリストのデータをテーブルビューに渡す
-            let nextVC = segue.destination as! NextListViewController
+            let nextVC = segue.destination as! MyListViewController
             nextVC.parentID = self.parentID
             print("tapped")
         }
-    }
-    
-    //Todo: editTappedに変更予定
-    @IBAction func addTapped(_ sender: Any) {
-        addAlart() //Todo: 削除予定
-        //Todo: stateを変更
-        /*
-         if state == .nomal {
-         state = .edit
-         button.label = "完了"
-         } else if state == .edit {
-         state = .namal
-         button.label = "編集"
-         }
-         */
-        
     }
     
     func addAlart(){ // 新規Anime追加用のダイアログを表示
@@ -214,13 +192,15 @@ class MyListViewController: UIViewController {
     }
     
     func reload() {
-        myListTable?.reloadData()
+        NextListTable?.reloadData()
         print("root: \(parentID)")
     }
     
-}
-
-extension MyListViewController: UITableViewDelegate {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        //フォルダのグループ化などで可変にしたいかも
+        return 1
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if state == .nomal {  //編集モードじゃなかったら
             /*Todo: もし追加用のセルがタップされたら
@@ -234,23 +214,15 @@ extension MyListViewController: UITableViewDelegate {
             if indexPath.row < (current.count) {
                 parentID = current[indexPath.row].id
             }
-            performSegue(withIdentifier: "toNextItems", sender: nil)
+            //performSegue(withIdentifier: "toNextItems", sender: nil)
         } else if state == .edit{ //編集モードだったら
             if let title = tableView.cellForRow(at: indexPath)?.textLabel?.text {
                 updateAlart(index: indexPath.row, item: title)
             }
         }
     }
-}
-
-extension MyListViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        //フォルダのグループ化などで可変にしたいかも
-        return 1
-    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         var numberOfFolders = 0
         var numberOfItems = 0
         let Folders = loardFolders(rootKey: parentID)
@@ -313,6 +285,17 @@ extension MyListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         //deleteAnimeItem(at: indexPath.row)
     }
+    
+    
+    
+    /*
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destinationViewController.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }
-
-
