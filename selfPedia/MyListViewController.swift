@@ -11,14 +11,14 @@ import RealmSwift
 
 class MyListViewController: UIViewController {
     
-    let dataManager = DataManager()
+    var dataManager = DataManager()
     
     private var animeList: Results<AnimeFolder>!
     private var token: NotificationToken!
     var parentID = "0"
     private var parentPrimaryKey = "0"
     private var state: State = .nomal
-    private var hierarchy = ["0"]
+    
     
     
     @IBOutlet weak var myListTable: UITableView!
@@ -44,9 +44,11 @@ class MyListViewController: UIViewController {
         reload()
         myListTable.delegate = self
         myListTable.dataSource = self
+        navigationController?.delegate = self
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewWillAppear(false)
         reload()
     }
     
@@ -59,8 +61,9 @@ class MyListViewController: UIViewController {
         if (segue.identifier == "toNextItems") {
             // 次のリストのデータをテーブルビューに渡す
             let nextVC = segue.destination as! NextListViewController
-            hierarchy.append(parentID)
+            dataManager.hierarchy.append(self.parentID)
             nextVC.parentID = self.parentID
+            nextVC.dataManager = self.dataManager
             print("tapped")
         }else if segue.identifier == "toAdd" {
             let addVC = segue.destination as! AddViewController
@@ -147,7 +150,6 @@ extension MyListViewController: UITableViewDelegate {
             // 次のデータリストへ遷移するために Segue を呼び出す
             
             let current = dataManager.loardFolders(rootKey: parentID)
-            print(current[indexPath.row])
             if indexPath.row < (current.count) {
                 parentID = current[indexPath.row].id
             }
@@ -207,8 +209,7 @@ extension MyListViewController: UITableViewDataSource {
         }else{
             folders = dataManager.getFolders(current: currentFolder!)
         }
-        
-        print(folders)
+
         if indexPath.row < (folders.count) {
             cell.textLabel?.text = folders[indexPath.row].title
         }else if (currentItems != nil), indexPath.row < (folders.count) + (currentItems?.count)!{ //ここでエラーが出た。
@@ -230,6 +231,19 @@ extension MyListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         //deleteAnimeItem(at: indexPath.row)
     }
+}
+
+extension MyListViewController: UINavigationControllerDelegate{
+    
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if let vc = viewController as? NextListViewController{
+            dataManager.hierarchy.removeLast()
+            vc.parentID = dataManager.hierarchy.last!
+            print(dataManager.hierarchy.last!)
+            vc.dataManager = self.dataManager
+        }
+    }
+    
 }
 
 

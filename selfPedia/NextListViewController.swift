@@ -13,7 +13,7 @@ class NextListViewController: UIViewController, UITableViewDelegate, UITableView
     
     private var realm: Realm!
     
-    let dataManager = DataManager()
+    var dataManager = DataManager()
     
     @IBOutlet weak var NextListTable: UITableView!
     
@@ -27,7 +27,7 @@ class NextListViewController: UIViewController, UITableViewDelegate, UITableView
         // RealmのAnimeリストを取得し，更新を監視
         dataManager.realm = try! Realm(configuration: dataManager.config)
         print(Realm.Configuration.defaultConfiguration.fileURL!)
-        animeList = realm.objects(AnimeFolder.self)
+        animeList = dataManager.realm.objects(AnimeFolder.self)
         //Resultsが更新されたらテーブルをリロードする
         token = animeList.observe { [weak self] _ in
             self?.reload()
@@ -43,6 +43,12 @@ class NextListViewController: UIViewController, UITableViewDelegate, UITableView
         NextListTable.delegate = self
         NextListTable.dataSource = self
         // Do any additional setup after loading the view.
+        navigationController?.delegate = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(false)
+        reload()
     }
     
     override func didReceiveMemoryWarning() {
@@ -51,11 +57,18 @@ class NextListViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if (segue.identifier == "toNextItems") {
+        if (segue.identifier == "toMyItems") {
             // 次のリストのデータをテーブルビューに渡す
-            let nextVC = segue.destination as! MyListViewController
-            nextVC.parentID = self.parentID
+            let myVC = segue.destination as! MyListViewController
+            dataManager.hierarchy.append(self.parentID)
+            myVC.parentID = self.parentID
+            myVC.dataManager = self.dataManager
             print("tapped")
+        }else if segue.identifier == "toAdd" {
+            let addVC = segue.destination as! AddViewController
+            if parentID != "0"{
+                addVC.currentID = parentID
+            }
         }
     }
     
@@ -178,5 +191,18 @@ class NextListViewController: UIViewController, UITableViewDelegate, UITableView
      // Pass the selected object to the new view controller.
      }
      */
+    
+}
+
+extension NextListViewController: UINavigationControllerDelegate{
+    
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if let vc = viewController as? MyListViewController{
+            dataManager.hierarchy.removeLast()
+            vc.parentID = dataManager.hierarchy.last!
+            print(dataManager.hierarchy.last!)
+            vc.dataManager = self.dataManager
+        }
+    }
     
 }

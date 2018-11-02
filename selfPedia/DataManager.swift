@@ -12,6 +12,7 @@ import RealmSwift
 class DataManager: NSObject {
     
     var realm: Realm!
+    var hierarchy = ["0"]
     
     //Realmのマイグレーション処理
     let config = Realm.Configuration(
