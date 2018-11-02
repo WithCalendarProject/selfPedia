@@ -20,7 +20,6 @@ class NextListViewController: UIViewController, UITableViewDelegate, UITableView
     private var animeList: Results<AnimeFolder>!
     private var token: NotificationToken!
     var parentID = "0"
-    private var parentPrimaryKey = "0"
     private var state: State = .nomal
     
     override func awakeFromNib() {
