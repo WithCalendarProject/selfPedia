@@ -10,6 +10,14 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--AddVC-->
+        <scene sceneID="EKL-Dn-1iq">
+            <objects>
+                <viewControllerPlaceholder storyboardName="AddVC" id="Jnc-ts-lvD" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hL1-6m-hdD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-60" y="-408"/>
+        </scene>
         <!--MyList-->
         <scene sceneID="NUU-jJ-1em">
             <objects>
@@ -23,11 +31,11 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="animeItem" id="54R-g6-ymM">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="animeItem" rowHeight="35" id="54R-g6-ymM">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="35"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="54R-g6-ymM" id="QNZ-Fu-6Go">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="34.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -41,6 +49,7 @@
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="3GJ-Jw-fd8">
                             <connections>
                                 <action selector="addTapped:" destination="4Ur-fT-Gyz" id="79A-Qw-i6v"/>
+                                <segue destination="Jnc-ts-lvD" kind="show" id="ygP-bS-Znb"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -52,7 +61,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ik7-QP-eUN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-274" y="143"/>
+            <point key="canvasLocation" x="-274.39999999999998" y="142.57871064467767"/>
         </scene>
         <!--Next List View Controller-->
         <scene sceneID="0Tc-3y-s62">
