@@ -10,7 +10,7 @@ import UIKit
 
 class AddViewController: UIViewController, UINavigationControllerDelegate, UITextFieldDelegate {
     
-    let dataManager = DataManager()
+    var dataManager = DataManager()
     var currentID = "0"
     
     @IBOutlet weak var nameTextField: UITextField!
@@ -37,6 +37,7 @@ class AddViewController: UIViewController, UINavigationControllerDelegate, UITex
             
         }else{
             let newFolder = AnimeFolder()
+            currentID = dataManager.hierarchy.last!
             newFolder.title = nameTextField.text!
             newFolder.parentID = currentID
             if viewController is MyListViewController || viewController is NextListViewController{

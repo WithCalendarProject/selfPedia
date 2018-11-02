@@ -48,6 +48,7 @@ class NextListViewController: UIViewController, UITableViewDelegate, UITableView
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
+        print(dataManager.hierarchy)
         reload()
     }
     
@@ -64,8 +65,9 @@ class NextListViewController: UIViewController, UITableViewDelegate, UITableView
             myVC.parentID = self.parentID
             myVC.dataManager = self.dataManager
             print("tapped")
-        }else if segue.identifier == "toAdd" {
+        }else if segue.identifier == "toAddFromNext" {
             let addVC = segue.destination as! AddViewController
+            addVC.dataManager = self.dataManager
             if parentID != "0"{
                 addVC.currentID = parentID
             }
@@ -104,11 +106,10 @@ class NextListViewController: UIViewController, UITableViewDelegate, UITableView
             // 次のデータリストへ遷移するために Segue を呼び出す
             
             let current = dataManager.loardFolders(rootKey: parentID)
-            print(current[indexPath.row])
             if indexPath.row < (current.count) {
                 parentID = current[indexPath.row].id
             }
-            //performSegue(withIdentifier: "toNextItems", sender: nil)
+            performSegue(withIdentifier: "toMyItems", sender: nil)
         } else if state == .edit{ //編集モードだったら
             if let title = tableView.cellForRow(at: indexPath)?.textLabel?.text {
                 updateAlart(index: indexPath.row, item: title)
@@ -157,7 +158,6 @@ class NextListViewController: UIViewController, UITableViewDelegate, UITableView
             folders = dataManager.getFolders(current: currentFolder!)
         }
         
-        print(folders)
         if indexPath.row < (folders.count) {
             cell.textLabel?.text = folders[indexPath.row].title
         }else if (currentItems != nil), indexPath.row < (folders.count) + (currentItems?.count)!{ //ここでエラーが出た。

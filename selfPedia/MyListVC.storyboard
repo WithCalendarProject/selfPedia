@@ -16,7 +16,7 @@
                 <viewControllerPlaceholder storyboardName="AddVC" id="Jnc-ts-lvD" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hL1-6m-hdD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-60" y="-408"/>
+            <point key="canvasLocation" x="494" y="430"/>
         </scene>
         <!--MyList-->
         <scene sceneID="NUU-jJ-1em">
@@ -49,7 +49,7 @@
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="3GJ-Jw-fd8">
                             <connections>
                                 <action selector="addTapped:" destination="4Ur-fT-Gyz" id="79A-Qw-i6v"/>
-                                <segue destination="Jnc-ts-lvD" kind="show" id="ygP-bS-Znb"/>
+                                <segue destination="Jnc-ts-lvD" kind="show" identifier="toAddFromMy" id="ygP-bS-Znb"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -63,7 +63,7 @@
             </objects>
             <point key="canvasLocation" x="-274.39999999999998" y="142.57871064467767"/>
         </scene>
-        <!--Next List View Controller-->
+        <!--Next-->
         <scene sceneID="0Tc-3y-s62">
             <objects>
                 <viewController id="BCI-WC-1AK" customClass="NextListViewController" customModule="selfPedia" customModuleProvider="target" sceneMemberID="viewController">
@@ -76,7 +76,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="Hwx-YP-SoV">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="animeItem" id="Hwx-YP-SoV">
                                         <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Hwx-YP-SoV" id="xOc-m9-ypU">
@@ -90,13 +90,24 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="gmG-Kp-bv1"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Next" id="Wif-x8-Rbh">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="oVD-5C-T4h">
+                            <connections>
+                                <segue destination="Jnc-ts-lvD" kind="show" identifier="toAddFromNext" id="3zd-bF-Kqg"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="NextListTable" destination="UEr-ap-U3b" id="4e3-NB-HKG"/>
+                        <segue destination="4Ur-fT-Gyz" kind="show" identifier="toMyItems" id="smF-Zh-4WT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MDe-sc-Dxc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="572" y="145.27736131934034"/>
+            <point key="canvasLocation" x="-274" y="971"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="3zd-bF-Kqg"/>
+    </inferredMetricsTieBreakers>
 </document>

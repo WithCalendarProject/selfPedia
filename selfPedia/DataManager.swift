@@ -54,6 +54,37 @@ class DataManager: NSObject {
         }
     }
     
+    /*
+     //アイテムの追加
+     func addAnimeItem(item: AnimeItem) {
+     
+     item.id = NSUUID().uuidString
+     
+     try! realm.write {
+     realm.add(item)
+     //今現在のルートフォルダを取得し、そのフォルダのcontentsにappendする
+     realm.object(ofType: AnimeFolder.self, forPrimaryKey: parentID)?.contents.append(item)
+     }
+     }
+     
+     //アイテムの更新
+     func updateAnimeItem(at index: Int, newValue: String, itemTitle: String){
+     let resutls = realm.objects(AnimeFolder.self).filter("title == itemTitle")
+     let updateItem = resutls[index]
+     try! realm.write {
+     updateItem.title = newValue
+     }
+     }
+     
+     //アイテムの削除
+     func deleteAnimeItem(at index: Int) {
+     try! realm.write {
+     realm.delete(animeList[index])
+     realm.object(ofType: AnimeFolder.self, forPrimaryKey: parentID)?.folders.remove(at: index)
+     }
+     }
+     */
+    
     func fetchFolder(folderID: String) -> AnimeFolder?{
         // プライマリキーを指定してオブジェクトを取得
         if let data = realm.object(ofType: AnimeFolder.self, forPrimaryKey: folderID){
