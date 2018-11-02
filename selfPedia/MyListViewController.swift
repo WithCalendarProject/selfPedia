@@ -11,27 +11,7 @@ import RealmSwift
 
 class MyListViewController: UIViewController {
     
-    private var realm: Realm!
-    
-    //Realmのマイグレーション処理
-    let config = Realm.Configuration(
-        schemaVersion : 2 , //データの構造が変わったらここを変える
-        migrationBlock : { migration, oldSchemaVersion in
-            if oldSchemaVersion < 2 {
-                var nextID = 0
-                migration.enumerateObjects(ofType: AnimeItem.className()) { oldObject, newObject in
-                    newObject!["id"] = String(nextID)
-                    nextID += 1
-                }
-                migration.enumerateObjects(ofType: AnimeFolder.className()) { oldObject, newObject in
-                    newObject!["id"] = String(nextID)
-                    nextID += 1
-                }
-            }
-    }
-    )
-    
-    // let config = Realm.Configuration(schemaVersion: 2)
+    var dataManager = DataManager()
     
     private var animeList: Results<AnimeFolder>!
     private var token: NotificationToken!
@@ -39,14 +19,16 @@ class MyListViewController: UIViewController {
     private var parentPrimaryKey = "0"
     private var state: State = .nomal
     
+    
+    
     @IBOutlet weak var myListTable: UITableView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // RealmのAnimeリストを取得し，更新を監視
-        realm = try! Realm(configuration: config)
+        dataManager.realm = try! Realm(configuration: dataManager.config)
         print(Realm.Configuration.defaultConfiguration.fileURL!)
-        animeList = realm.objects(AnimeFolder.self)
+        animeList = dataManager.realm.objects(AnimeFolder.self)
         //Resultsが更新されたらテーブルをリロードする
         token = animeList.observe { [weak self] _ in
             self?.reload()
@@ -62,9 +44,11 @@ class MyListViewController: UIViewController {
         reload()
         myListTable.delegate = self
         myListTable.dataSource = self
+        navigationController?.delegate = self
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewWillAppear(false)
         reload()
     }
     
@@ -77,14 +61,20 @@ class MyListViewController: UIViewController {
         if (segue.identifier == "toNextItems") {
             // 次のリストのデータをテーブルビューに渡す
             let nextVC = segue.destination as! NextListViewController
+            dataManager.hierarchy.append(self.parentID)
             nextVC.parentID = self.parentID
+            nextVC.dataManager = self.dataManager
             print("tapped")
+        }else if segue.identifier == "toAdd" {
+            let addVC = segue.destination as! AddViewController
+            if parentID != "0"{
+                addVC.currentID = parentID
+            }
         }
     }
     
     //Todo: editTappedに変更予定
     @IBAction func addTapped(_ sender: Any) {
-        addAlart() //Todo: 削除予定
         //Todo: stateを変更
         /*
          if state == .nomal {
@@ -96,20 +86,6 @@ class MyListViewController: UIViewController {
          }
          */
         
-    }
-    
-    func addAlart(){ // 新規Anime追加用のダイアログを表示
-        let folder = AnimeFolder()
-        let dlg = UIAlertController(title: "新規Anime", message: "", preferredStyle: .alert)
-        dlg.addTextField(configurationHandler: nil)
-        dlg.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-            if let t = dlg.textFields![0].text,
-                !t.isEmpty {
-                folder.title = t
-                //self.addAnimeFolder(folder: folder)
-            }
-        }))
-        present(dlg, animated: true)
     }
     
     func updateAlart(index: Int, item: String){ // Anime更新用のダイアログを表示
@@ -137,22 +113,6 @@ class MyListViewController: UIViewController {
      }
      }
      
-     //フォルダーの追加
-     func addAnimeFolder(folder: AnimeFolder) {
-     
-     folder.id = NSUUID().uuidString
-     folder.parentID = parentID
-     
-     try! realm.write {
-     if parentID == "0" {
-     realm.add(folder)
-     }else{
-     //今現在のルートフォルダを取得し、そのフォルダのfoldersにappendする
-     realm.object(ofType: AnimeFolder.self, forPrimaryKey: parentID)?.folders.append(folder.id)
-     }
-     }
-     }
-     
      //アイテムの更新
      func updateAnimeItem(at index: Int, newValue: String, itemTitle: String){
      let resutls = realm.objects(AnimeFolder.self).filter("title == itemTitle")
@@ -171,47 +131,7 @@ class MyListViewController: UIViewController {
      }
      */
     
-    func fetchFolder(folderID: String) -> AnimeFolder?{
-        // プライマリキーを指定してオブジェクトを取得
-        if let data = realm.object(ofType: AnimeFolder.self, forPrimaryKey: folderID){
-            print("id:\(folderID)\n data: \(data)")
-            return data
-        }
-        return nil
-    }
     
-    // 現在のフォルダの階層下フォルダをリストとして返す
-    func getFolders(current: AnimeFolder) -> List<AnimeFolder>{
-        let resultFolders = List<AnimeFolder>()
-        for i in current.folders{
-            resultFolders.append(fetchFolder(folderID: i)!)
-        }
-        return resultFolders
-    }
-    
-    func fetchItems(itemID: String) -> AnimeItem?{
-        // プライマリキーを指定してオブジェクトを取得
-        if let data = realm.object(ofType: AnimeItem.self, forPrimaryKey: itemID){
-            print("id:\(itemID)\n data: \(data)")
-            return data
-        }
-        return nil
-    }
-    
-    func loardFolders(rootKey: String) -> List<AnimeFolder> {
-        let resultFolders = List<AnimeFolder>()
-        let resuliList = realm.objects(AnimeFolder.self).filter("parentID == %@", rootKey)
-        for i in resuliList{
-            resultFolders.append(i)
-        }
-        //print(resuliList.count)
-        return resultFolders
-    }
-    
-    func loardItems(rootKey: String) -> List<AnimeItem>? {
-        let items = realm.object(ofType: AnimeFolder.self, forPrimaryKey: rootKey)
-        return items?.contents
-    }
     
     func reload() {
         myListTable?.reloadData()
@@ -229,8 +149,7 @@ extension MyListViewController: UITableViewDelegate {
              } */
             // 次のデータリストへ遷移するために Segue を呼び出す
             
-            let current = loardFolders(rootKey: parentID)
-            print(current[indexPath.row])
+            let current = dataManager.loardFolders(rootKey: parentID)
             if indexPath.row < (current.count) {
                 parentID = current[indexPath.row].id
             }
@@ -253,14 +172,14 @@ extension MyListViewController: UITableViewDataSource {
         
         var numberOfFolders = 0
         var numberOfItems = 0
-        let Folders = loardFolders(rootKey: parentID)
+        let Folders = dataManager.loardFolders(rootKey: parentID)
         numberOfFolders = Folders.count
         
-        if let Items = loardItems(rootKey: parentID) {
+        if let Items = dataManager.loardItems(rootKey: parentID) {
             numberOfItems = Items.count
         }
         
-        if loardFolders(rootKey: parentID) == nil {
+        if dataManager.loardFolders(rootKey: parentID) == nil {
             return 0
         }
         
@@ -282,16 +201,15 @@ extension MyListViewController: UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "animeItem", for: indexPath)
         
-        let currentItems = loardItems(rootKey: parentID)
-        let currentFolder = fetchFolder(folderID: parentID)
+        let currentItems = dataManager.loardItems(rootKey: parentID)
+        let currentFolder = dataManager.fetchFolder(folderID: parentID)
         var folders = List<AnimeFolder>()
         if parentID == "0" {
-            folders = loardFolders(rootKey: parentID)
+            folders = dataManager.loardFolders(rootKey: parentID)
         }else{
-            folders = getFolders(current: currentFolder!)
+            folders = dataManager.getFolders(current: currentFolder!)
         }
-        
-        print(folders)
+
         if indexPath.row < (folders.count) {
             cell.textLabel?.text = folders[indexPath.row].title
         }else if (currentItems != nil), indexPath.row < (folders.count) + (currentItems?.count)!{ //ここでエラーが出た。
@@ -299,7 +217,7 @@ extension MyListViewController: UITableViewDataSource {
         }
         
         
-        if loardFolders(rootKey: parentID) == nil {
+        if dataManager.loardFolders(rootKey: parentID) == nil {
             return cell
         }
         
@@ -313,6 +231,19 @@ extension MyListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         //deleteAnimeItem(at: indexPath.row)
     }
+}
+
+extension MyListViewController: UINavigationControllerDelegate{
+    
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if let vc = viewController as? NextListViewController{
+            dataManager.hierarchy.removeLast()
+            vc.parentID = dataManager.hierarchy.last!
+            print(dataManager.hierarchy.last!)
+            vc.dataManager = self.dataManager
+        }
+    }
+    
 }
 
 
