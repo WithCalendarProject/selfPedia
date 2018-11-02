@@ -65,8 +65,9 @@ class MyListViewController: UIViewController {
             nextVC.parentID = self.parentID
             nextVC.dataManager = self.dataManager
             print("tapped")
-        }else if segue.identifier == "toAdd" {
+        }else if segue.identifier == "toAddFromMy" {
             let addVC = segue.destination as! AddViewController
+            addVC.dataManager = self.dataManager
             if parentID != "0"{
                 addVC.currentID = parentID
             }
@@ -99,39 +100,6 @@ class MyListViewController: UIViewController {
         }))
         present(dlg, animated: true)
     }
-    
-    /*
-     //アイテムの追加
-     func addAnimeItem(item: AnimeItem) {
-     
-     item.id = NSUUID().uuidString
-     
-     try! realm.write {
-     realm.add(item)
-     //今現在のルートフォルダを取得し、そのフォルダのcontentsにappendする
-     realm.object(ofType: AnimeFolder.self, forPrimaryKey: parentID)?.contents.append(item)
-     }
-     }
-     
-     //アイテムの更新
-     func updateAnimeItem(at index: Int, newValue: String, itemTitle: String){
-     let resutls = realm.objects(AnimeFolder.self).filter("title == itemTitle")
-     let updateItem = resutls[index]
-     try! realm.write {
-     updateItem.title = newValue
-     }
-     }
-     
-     //アイテムの削除
-     func deleteAnimeItem(at index: Int) {
-     try! realm.write {
-     realm.delete(animeList[index])
-     realm.object(ofType: AnimeFolder.self, forPrimaryKey: parentID)?.folders.remove(at: index)
-     }
-     }
-     */
-    
-    
     
     func reload() {
         myListTable?.reloadData()
