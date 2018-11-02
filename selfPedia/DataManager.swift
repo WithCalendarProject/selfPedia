@@ -31,9 +31,11 @@ class DataManager: NSObject {
     }
     )
     
-    func addAnimeFolder(parent:String, folder: AnimeFolder) {
-        
+    override init() {
         realm = try! Realm(configuration: config)
+    }
+    
+    func addAnimeFolder(parent:String, folder: AnimeFolder) {
         
         let parentID = parent
         
