@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3213E71E2191977900BED1F8 /* ThirdListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3213E71D2191977900BED1F8 /* ThirdListViewController.swift */; };
 		39A7DC26670308BFDD4E9E42 /* Pods_selfPediaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB11616270BA02863BFBD3DA /* Pods_selfPediaTests.framework */; };
 		500081E0218A841800CF9255 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 500081DF218A841800CF9255 /* DataManager.swift */; };
 		500081E2218AB67300CF9255 /* AddVC.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 500081E1218AB67300CF9255 /* AddVC.storyboard */; };
@@ -48,6 +49,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3213E71D2191977900BED1F8 /* ThirdListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdListViewController.swift; sourceTree = "<group>"; };
 		3E2B31883717ACE52BC181DA /* Pods-selfPediaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-selfPediaTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-selfPediaTests/Pods-selfPediaTests.release.xcconfig"; sourceTree = "<group>"; };
 		500081DF218A841800CF9255 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		500081E1218AB67300CF9255 /* AddVC.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AddVC.storyboard; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 				50BE31BA214F756400777CFC /* HomeViewController.swift */,
 				50BE31BE2150074500777CFC /* MyListViewController.swift */,
 				50A45DFC2180EBE400F00D6D /* NextListViewController.swift */,
+				3213E71D2191977900BED1F8 /* ThirdListViewController.swift */,
 				500F5597218B1A3200C88239 /* AddViewController.swift */,
 				5010882321593D920034B66E /* MyListCell.swift */,
 				503906C8215817B300B030CC /* AnimeItem.swift */,
@@ -418,6 +421,7 @@
 				50A45DFD2180EBE400F00D6D /* NextListViewController.swift in Sources */,
 				50BE318D214F753400777CFC /* AppDelegate.swift in Sources */,
 				5010882421593D920034B66E /* MyListCell.swift in Sources */,
+				3213E71E2191977900BED1F8 /* ThirdListViewController.swift in Sources */,
 				50BE31BF2150074500777CFC /* MyListViewController.swift in Sources */,
 				503906C9215817B300B030CC /* AnimeItem.swift in Sources */,
 				50BE31BB214F756400777CFC /* HomeViewController.swift in Sources */,

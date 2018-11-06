@@ -1,21 +1,21 @@
 //
-//  NextListViewController.swift
+//  ThirdListViewController.swift
 //  selfPedia
 //
-//  Created by 川村周也 on 2018/10/25.
+//  Created by 前田陸 on 2018/11/06.
 //  Copyright © 2018年 川村周也. All rights reserved.
 //
 
 import UIKit
 import RealmSwift
 
-class NextListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    
+class ThirdListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+
     private var realm: Realm!
     
     var dataManager = DataManager()
     
-    @IBOutlet weak var NextListTable: UITableView!
+    @IBOutlet weak var ThirdListTable: UITableView!
     
     private var animeList: Results<AnimeFolder>!
     private var token: NotificationToken!
@@ -40,8 +40,8 @@ class NextListViewController: UIViewController, UITableViewDelegate, UITableView
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        NextListTable.delegate = self
-        NextListTable.dataSource = self
+        ThirdListTable.delegate = self
+        ThirdListTable.dataSource = self
         // Do any additional setup after loading the view.
         navigationController?.delegate = self
     }
@@ -51,21 +51,22 @@ class NextListViewController: UIViewController, UITableViewDelegate, UITableView
         print(dataManager.hierarchy)
         reload()
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if (segue.identifier == "toThirdItems") {
+        /*if (segue.identifier == "toMyItems") {
             // 次のリストのデータをテーブルビューに渡す
-            let thirdVC = segue.destination as! ThirdListViewController
+            let myVC = segue.destination as! MyListViewController
             dataManager.hierarchy.append(self.parentID)
-            thirdVC.parentID = self.parentID
-            thirdVC.dataManager = self.dataManager
+            myVC.parentID = self.parentID
+            myVC.dataManager = self.dataManager
             print("tapped")
-        }else if segue.identifier == "toAddFromNext" {
+        }else*/
+        if segue.identifier == "toAddFromThird" {
             let addVC = segue.destination as! AddViewController
             addVC.dataManager = self.dataManager
             if parentID != "0"{
@@ -86,9 +87,8 @@ class NextListViewController: UIViewController, UITableViewDelegate, UITableView
         present(dlg, animated: true)
     }
     
-    
     func reload() {
-        NextListTable?.reloadData()
+        ThirdListTable?.reloadData()
         print("root: \(parentID)")
     }
     
@@ -109,7 +109,7 @@ class NextListViewController: UIViewController, UITableViewDelegate, UITableView
             if indexPath.row < (current.count) {
                 parentID = current[indexPath.row].id
             }
-            performSegue(withIdentifier: "toThirdItems", sender: nil)
+            //performSegue(withIdentifier: "toMyItems", sender: nil)
         } else if state == .edit{ //編集モードだったら
             if let title = tableView.cellForRow(at: indexPath)?.textLabel?.text {
                 updateAlart(index: indexPath.row, item: title)
@@ -134,7 +134,7 @@ class NextListViewController: UIViewController, UITableViewDelegate, UITableView
         //ある親階層下の、foldersの要素数 + contentsの要素数
         return numberOfFolders + numberOfItems
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         /*
          // 条件によってセルが変わる想定
@@ -179,22 +179,10 @@ class NextListViewController: UIViewController, UITableViewDelegate, UITableView
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         //deleteAnimeItem(at: indexPath.row)
     }
-    
-    
-    
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
-    
+
 }
 
-extension NextListViewController: UINavigationControllerDelegate{
+extension ThirdListViewController: UINavigationControllerDelegate{
     
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         if let vc = viewController as? MyListViewController{
